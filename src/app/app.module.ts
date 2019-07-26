@@ -23,6 +23,9 @@ import { PlayerModule } from './site/player/player.module';
 import { PlayerService } from './services/player/player.service';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { EventModule } from './site/event/event.module';
+import { EventService } from './services/event/event.service';
+import { ContestModule } from './site/contest/contest.module';
 
 registerLocaleData(fr);
 @NgModule({
@@ -43,12 +46,14 @@ registerLocaleData(fr);
     BrowserAnimationsModule,
     CustomMaterialModule,
     PlayerModule,
+    EventModule,
+    ContestModule,
     ReactiveFormsModule,
     FormsModule,
     NgbModule,
     ErrorsModule
   ],
-  providers: [{provide: LOCALE_ID, useValue: "fr-CA"}, PlayerService],
+  providers: [{provide: LOCALE_ID, useValue: "fr-CA"}, PlayerService, EventService],
   bootstrap: [AppComponent]
 })
 

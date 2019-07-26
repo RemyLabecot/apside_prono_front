@@ -1,0 +1,70 @@
+<br>
+<br>
+<div class="container">
+  <div class="row">
+    <button type="button" class="btn btn-success addButton" (click)=open(modalCreate)>Ajouter une compétition</button>
+    <table class="table table-hover" *ngIf='contests'>
+      <thead>
+        <tr class="thead_font">
+          <th scope="col">label</th>
+          <th>Gestion</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="table-light" *ngFor='let contest of contests'>
+          <td scope="row">{{contest.label}}</td>
+          <td><button type="button" class="btn btn-info" (click)=open(modalUpdate)
+              (click)=getContestById(contest.id)>Modifier</button><button type="button" class="btn btn-danger"
+              (click)="deleteContest(contest.id)">Supprimer</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<ng-template #modalCreate>
+  <div class="modal-header">
+    <h4 class="modal-title">Ajouter une compétition</h4>
+    <button type="button" class="close" aria-label="Close" (click)="close(modal)">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+
+    <form [formGroup]="createContestForm" (ngSubmit)="createContest()" ngNativeValidate>
+      <div class="form-group">
+        <label for="label">Nom de la compétition :</label>
+        <input type="text" class="form-control" id="label" [formControl]="label" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Envoyer</button>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="close(modal)">Fermer</button>
+  </div>
+</ng-template>
+
+<ng-template #modalUpdate>
+  <div class="modal-header">
+    <h4 class="modal-title">Modifier une compétition</h4>
+    <button type="button" class="close" aria-label="Close" (click)="close(modal)">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+
+    <form [formGroup]="createContestForm" (ngSubmit)="updateContest()" ngNativeValidate>
+        <div class="form-group">
+            <label for="label">Nom de la compétition :</label>
+            <input type="text" class="form-control" id="label" [formControl]="label" value="{{contestUpdate.label}}" required>
+          </div>
+      <button type="submit" class="btn btn-primary">Envoyer</button>
+    </form>
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="close(modal)">Fermer</button>
+  </div>
+</ng-template>
+

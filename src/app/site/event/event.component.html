@@ -1,0 +1,130 @@
+<br>
+<br>
+<div class="container">
+  <div class="row">
+    <button type="button" class="btn btn-success addButton" (click)=open(modalCreate)>Ajouter un événement</button>
+    <table class="table table-hover" *ngIf='events'>
+      <thead>
+        <tr class="thead_font">
+          <th scope="col">label</th>
+          <th scope="col">Date de l'événement</th>
+          <th scope="col">Ouverture des paris</th>
+          <th scope="col">Fermeture des paris</th>
+          <th scope="col">Coefficient</th>
+          <th scope="col">Compétition</th>
+          <th>Gestion</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="table-light" *ngFor='let event of events'>
+          <td scope="row">{{event.label}}</td>
+          <td>{{event.eventDate | date: 'dd/MM/yyyy'}}</td>
+          <td>{{event.openDate | date: 'dd/MM/yyyy'}}</td>
+          <td>{{event.closeDate | date: 'dd/MM/yyyy'}}</td>
+          <td>{{event.coeff}}</td>
+          <td>{{event.contest.label}}</td>
+          <td><button type="button" class="btn btn-info" (click)=open(modalUpdate)
+              (click)=getEventById(event.id)>Modifier</button><button type="button" class="btn btn-danger"
+              (click)="deleteEvent(event.id)">Supprimer</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<ng-template #modalCreate>
+  <div class="modal-header">
+    <h4 class="modal-title">Ajouter un événement</h4>
+    <button type="button" class="close" aria-label="Close" (click)="close(modal)">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+
+    <form [formGroup]="createEventForm" (ngSubmit)="createEvent()" ngNativeValidate>
+      <div class="form-group">
+        <label for="label">Nom de l'événement :</label>
+        <input type="text" class="form-control" id="label" [formControl]="label" required>
+      </div>
+      <div class="form-group">
+        <label for="eventDate">Date de l'événement :</label>
+        <input type="date" class="form-control" id="eventDate" [formControl]="eventDate" required>
+      </div>
+      <div class="form-group">
+        <label for="openDate">Ouverture des paris :</label>
+        <input type="date" class="form-control" id="openDate" [formControl]="openDate" required>
+      </div>
+      <div class="form-group">
+        <label for="closeDate">Fermeture des paris :</label>
+        <input type="date" class="form-control" id="closeDate" [formControl]="closeDate" required>
+      </div>
+      <div class="form-group">
+        <label for="coeff">Coefficient :</label>
+        <input type="number" class="form-control" id="coeff" [formControl]="coeff" required>
+      </div>
+      <div class="form-group">
+        <label for="contest">Concours :</label>
+        <select type="text" class="form-control" id="contest" [formControl]="contest"
+          (change)='getContestById($event.target.value)' required>
+          <option *ngFor='let contest of contests' [value]='contest.id'>{{contest.label}}</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Envoyer</button>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="close(modal)">Fermer</button>
+  </div>
+</ng-template>
+
+<ng-template #modalUpdate>
+  <div class="modal-header">
+    <h4 class="modal-title">Modifier un joueur</h4>
+    <button type="button" class="close" aria-label="Close" (click)="close(modal)">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+
+    <form [formGroup]="createEventForm" (ngSubmit)="updateEvent()" ngNativeValidate>
+      <div class="form-group">
+        <label for="label">Nom de l'événement :</label>
+        <input type="text" class="form-control" id="label" [formControl]="label" value="{{eventUpdate.label}}" required>
+      </div>
+      <div class="form-group">
+        <label for="eventDate">Date de l'événement :</label>
+        <input type="date" class="form-control" id="eventDate" [formControl]="eventDate"
+          value="{{eventUpdate.eventDate | date : 'yyyy-MM-dd'}}" required>
+      </div>
+      <div class="form-group">
+        <label for="openDate">Ouverture des paris:</label>
+        <input type="date" class="form-control" id="openDate" [formControl]="openDate" value="{{eventUpdate.openDate | date : 'yyyy-MM-dd'}}"
+          required>
+      </div>
+      <div class="form-group">
+        <label for="closeDate">Fermeture des paris:</label>
+        <input type="date" class="form-control" id="closeDate" [formControl]="closeDate"
+          value="{{eventUpdate.closeDate | date : 'yyyy-MM-dd'}}" required>
+      </div>
+      <div class="form-group">
+        <label for="coeff">Coefficient :</label>
+        <input type="number" class="form-control" id="coeff" [formControl]="coeff" value="{{eventUpdate.coeff}}" required>
+      </div>
+      <div class="form-group">
+        <label for="contest">Concours :</label>
+        <select type="text" class="form-control" id="contest" [formControl]="contest"
+          (change)='getContestById($event.target.value)' required>
+          <!-- <option selected>{{eventUpdate.contest.label}}</option> -->
+          <option *ngFor='let contest of contests' [value]='contest.id'>{{contest.label}}</option>
+          
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Envoyer</button>
+    </form>
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="close(modal)">Fermer</button>
+  </div>
+</ng-template>

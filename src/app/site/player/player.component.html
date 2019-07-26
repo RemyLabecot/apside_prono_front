@@ -2,12 +2,13 @@
 <br>
 <div class="container">
   <div class="row">
+      <button type="button" class="btn btn-success addButton" (click)=open(modalCreate)>Ajouter un joueur</button>
     <table class="table table-hover" *ngIf='players'>
       <thead>
         <tr class="thead_font">
           <th scope="col">Prénom</th>
           <th scope="col">Nom</th>
-          <th scope="col">Date</th>
+          <th scope="col">Date d'inscription</th>
           <th scope="col">Email</th>
           <th scope="col">Gestion</th>
         </tr>
@@ -18,18 +19,16 @@
           <td>{{player.lastName}}</td>
           <td>{{player.subscriptionDate | date:'dd/MM/yyyy'}}</td>
           <td>{{player.mail}}</td>
-          <td><button type="button" class="btn btn-info">Mettre à jour</button><button type="button"
+          <td><button type="button" class="btn btn-info" (click)=open(modalUpdate) (click)=getPlayerById(player.id)>Modifier</button><button type="button"
               class="btn btn-danger" (click)="deletePlayer(player.id)">Supprimer</button></td>
         </tr>
       </tbody>
     </table>
-    <button type="button" class="btn btn-success addButton" (click)=open(modal)>Ajouter un joueur</button>
   </div>
 </div>
 
 
-
-<ng-template #modal>
+<ng-template #modalCreate>
   <div class="modal-header">
     <h4 class="modal-title">Ajouter un joueur</h4>
     <button type="button" class="close" aria-label="Close" (click)="close(modal)">
@@ -38,24 +37,55 @@
   </div>
   <div class="modal-body">
 
-    <form [formGroup]="createPlayerForm" (ngSubmit)="createPlayer()">
+    <form [formGroup]="createPlayerForm" (ngSubmit)="createPlayer()" ngNativeValidate>
       <div class="form-group">
         <label for="firstName">Prénom :</label>
-        <input type="text" class="form-control" id="firstName" [formControl]="firstName">
+        <input type="text" class="form-control" id="firstName" [formControl]="firstName" required>
       </div>
       <div class="form-group">
         <label for="lastName">Nom :</label>
-        <input type="text" class="form-control" id="lastName" [formControl]="lastName">
+        <input type="text" class="form-control" id="lastName" [formControl]="lastName" required>
       </div>
       <div class="form-group">
         <label for="mail">Email:</label>
-        <input type="email" class="form-control" id="mail" [formControl]="mail">
+        <input type="email" class="form-control" id="mail" [formControl]="mail" required>
       </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
+      <button type="submit" class="btn btn-primary">Envoyer</button>
     </form>
 
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-dark" (click)="close(modal)">Close</button>
+    <button type="button" class="btn btn-outline-dark" (click)="close(modal)">Fermer</button>
   </div>
 </ng-template>
+
+<ng-template #modalUpdate>
+    <div class="modal-header">
+      <h4 class="modal-title">Modifier un joueur</h4>
+      <button type="button" class="close" aria-label="Close" (click)="close(modal)">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+  
+      <form [formGroup]="createPlayerForm" (ngSubmit)="updatePlayer()" ngNativeValidate>
+        <div class="form-group">
+          <label for="firstName">Prénom :</label>
+          <input type="text" class="form-control" id="firstName" [formControl]="firstName" value="{{playerUpdate.firstName}}" required>
+        </div>
+        <div class="form-group">
+          <label for="lastName">Nom :</label>
+          <input type="text" class="form-control" id="lastName" [formControl]="lastName" value="{{playerUpdate.lastName}}" required>
+        </div>
+        <div class="form-group">
+          <label for="mail">Email:</label>
+          <input type="email" class="form-control" id="mail" [formControl]="mail" value="{{playerUpdate.mail}}" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Envoyer</button>
+      </form>
+  
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-dark" (click)="close(modal)">Fermer</button>
+    </div>
+  </ng-template>

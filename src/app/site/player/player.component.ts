@@ -17,10 +17,10 @@ export class PlayerComponent implements OnInit {
   private subscription: Subscription;
   private players: Player[];
 
-  id: FormControl;
+  private playerUpdate: Player;
+
   firstName: FormControl;
   lastName: FormControl;
-  subscriptionDate: FormControl;
   mail: FormControl;
 
   createPlayerForm: FormGroup;
@@ -28,20 +28,18 @@ export class PlayerComponent implements OnInit {
   constructor(private playerService: PlayerService, private builder: FormBuilder, config: NgbModalConfig, private modalService: NgbModal) {
     this.subscription = this.playerService.getAllPlayers()
       .subscribe(
-        players => this.playerService.players.next(players)
+        players => this.playerService.players.next(players),
+        err => console.log("Erreur : " + err + "liste de joueurs non trouvé")
       );
 
-    this.id = new FormControl('', Validators.required);
+
     this.firstName = new FormControl('', Validators.required);
     this.lastName = new FormControl('', Validators.required);
-    this.subscriptionDate = new FormControl('', Validators.required);
     this.mail = new FormControl('', Validators.required);
 
     this.createPlayerForm = this.builder.group({
-      id: this.id,
       firstName: this.firstName,
       lastName: this.lastName,
-      subscriptionDate: this.subscriptionDate,
       mail: this.mail
     });
 
@@ -57,8 +55,27 @@ export class PlayerComponent implements OnInit {
           this.players = players
           console.log("Player list Init")
         },
-        err => console.log(err)
+        err => console.log("Erreur : " + err + "Liste de joueurs non trouvé")
       );
+  }
+
+  public getPlayerById(id: number) {
+    this.playerService.getPlayerById(id)
+      .subscribe(
+        player => 
+        {
+          this.playerUpdate = player
+          this.createPlayerForm.patchValue(
+            {
+              "firstName": player.firstName,
+              "lastName": player.lastName,
+              "subscriptionDate": player.subscriptionDate,
+              "mail": player.mail
+            }
+          )
+        },
+        err => console.log("Joueur inconnu")
+    );
   }
 
   public createPlayer(): Player {
@@ -70,9 +87,27 @@ export class PlayerComponent implements OnInit {
           console.log("Joueur créé")
           this.ngOnInit()
           this.modalService.dismissAll()
-        }
+        },
+        err => console.log(err.error.message)
       )
     return player;
+  }
+
+  public updatePlayer(): Player {
+    
+    let player2 = new Player(this.firstName.value, this.lastName.value, this.mail.value, this.playerUpdate.subscriptionDate);
+    player2.id = this.playerUpdate.id;
+
+    this.playerService.updatePlayer(player2)
+    .subscribe(
+      player => {
+          console.log("Joueur modifié")
+          this.ngOnInit()
+          this.modalService.dismissAll()
+      },
+      err => console.log(err.error.message)
+    );
+    return player2;
   }
 
   public deletePlayer(id: number) {
@@ -82,7 +117,7 @@ export class PlayerComponent implements OnInit {
           console.log("Le joueur a été supprimé")
           this.ngOnInit()
         },
-        err => console.log(err)
+        err => console.log(err.error.message)
       );
   }
 

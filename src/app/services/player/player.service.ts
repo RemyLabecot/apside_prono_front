@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 import { Player } from 'src/app/Models/player';
-import { identifierModuleUrl } from '@angular/compiler';
 
 
 @Injectable()
@@ -21,7 +20,11 @@ export class PlayerService {
     constructor(private http: HttpClient) { }
 
     public getAllPlayers(): Observable<Player[]> {
-        return this.http.get<Player[]>(`${this.baseURL}/allPlayers`, this.httpOptions);
+        return this.http.get<Player[]>(`${this.baseURL}`, this.httpOptions);
+    }
+
+    public getPlayerById(id: number): Observable<Player> {
+        return this.http.get<Player>(`${this.baseURL}/${id}`, this.httpOptions);
     }
 
     public createPlayer(player: Player): Observable<Player> {
@@ -32,11 +35,22 @@ export class PlayerService {
             "mail": player.mail
         }
 
-        return this.http.post<Player>(`${this.baseURL}/create`, jsonPlayer, this.httpOptions);
+        return this.http.post<Player>(`${this.baseURL}`, jsonPlayer, this.httpOptions);
+    }
+
+    public updatePlayer(player: Player): Observable<Player> {
+        let jsonPlayer = {
+            "id": player.id,
+            "firstName": player.firstName,
+            "lastName": player.lastName,
+            "subscriptionDate": player.subscriptionDate,
+            "mail": player.mail
+        };
+        return this.http.put<Player>(`${this.baseURL}`, jsonPlayer, this.httpOptions);
     }
 
     public deletePlayer(id: number): Observable<Player> {
-        return this.http.delete<Player>(`${this.baseURL}/delete/${id}`, this.httpOptions);
+        return this.http.delete<Player>(`${this.baseURL}/${id}`, this.httpOptions);
     }
 
     public get players() {
